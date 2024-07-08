@@ -17,17 +17,17 @@ mongoose.set("strictQuery", false);
 
 mongoose.connect(url);
 
-const noteSchema = new mongoose.Schema({
+const personSchema = new mongoose.Schema({
   name: String,
   phone: String,
 });
 
-const Note = mongoose.model("Note", noteSchema);
+const Person = mongoose.model("Person", personSchema);
 
 if (process.argv.length < 4) {
-  Note.find({}).then((result) => {
-    result.forEach((note) => {
-      console.log(note.name, note.phone);
+  Person.find({}).then((result) => {
+    result.forEach((person) => {
+      console.log(person.name, person.phone);
     });
     mongoose.connection.close();
   });
@@ -35,12 +35,12 @@ if (process.argv.length < 4) {
 }
 
 if (process.argv.length === 5) {
-  const note = new Note({
+  const person = new Person({
     name: name,
     phone: number,
   });
 
-  note.save().then((result) => {
+  person.save().then((result) => {
     console.log("Added! " + name + " " + number + " to phonebook");
     mongoose.connection.close();
   });
