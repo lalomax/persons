@@ -37,10 +37,11 @@ app.get("/info", (request, response) => {
 });
 
 // getting one person
-app.get("/api/persons/:id", (request, response) => {
+app.get("/api/persons/:id", (request, response, next) => {
   Person.findById(request.params.id).then(person => {
     response.json(person)
   })
+  .catch(error => next(error))
 });
 
 // deleting one person
@@ -68,6 +69,19 @@ app.post("/api/persons", (request, response) => {
     response.json(savedPerson)
   })
 });
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } 
+
+  next(error)
+}
+
+// este debe ser el último middleware cargado, ¡también todas las rutas deben ser registrada antes que esto!
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
